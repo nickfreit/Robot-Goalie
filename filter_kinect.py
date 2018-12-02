@@ -1,3 +1,6 @@
+# command to start up kinect camera
+# roslaunch freenect_launch freenect.launch rgb_frame_id:=camera_rgb_optical_frame depth_frame_id:=camera_depth_optical_frame
+
 import roslib
 #roslib.load_manifest('my_package')
 import sys
