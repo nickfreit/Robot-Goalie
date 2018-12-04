@@ -18,6 +18,7 @@ class image_converter:
     self.image_sub = rospy.Subscriber("/camera/depth/image_raw",Image,self.callback)
     self.bgs = cv2.createBackgroundSubtractorMOG2()
     self.bgs.setHistory(150)
+    #self.out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 30, (640, 480))
 
   def callback(self,data):
     try:
@@ -26,23 +27,19 @@ class image_converter:
       print(e)
 
     filter_frame, x, y = self.filterFrame(cv_image)
-    if (x >= 0):
-      print(str(x) + " " + str(y) + " " + str(cv_image[y][x]))
+    #if (x >= 0):
+      #print(str(x) + " " + str(y) + " " + str(cv_image[y][x]))
     cv2.imshow("Image window", filter_frame)
+    #filter_frame = cv2.cvtColor(filter_frame, cv2.COLOR_GRAY2BGR)
+    #self.out.write(filter_frame)
     cv2.waitKey(3)
 
-    '''
-    try:
-      self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "passthrough"))
-    except CvBridgeError as e:
-      print(e)'''
-
   def filterFrame(self, frame):
-    #ret, frame_thresh = cv2.threshold(frame, 1, 1000, cv2.THRESH_TOZERO_INV)
     frame_mask = self.bgs.apply(frame)
+
     ret, frame_mask = cv2.threshold(frame_mask, 50, 255, cv2.THRESH_BINARY)
     frame_mask = cv2.erode(frame_mask, None, iterations=2)
-    frame_mask = cv2.erode(frame_mask, None, iterations=1)
+    frame_mask = cv2.dilate(frame_mask, None, iterations=1)
     frame_mask, contours, hierarchy = cv2.findContours(frame_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     x = y = -1
     if len(contours) > 0:
