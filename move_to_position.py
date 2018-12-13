@@ -9,22 +9,24 @@ from std_msgs.msg import String, Float64MultiArray
 from moveit_commander.conversions import pose_to_list
 
 def move(pose_target):
-    group1.set_pose_target(pose_target)
-    plan1 = group1.plan()
-    group1.go(wait=True)
-    return 
+    print "Trying to move to target "
+    print pose_target
+    group.set_pose_target(pose_target)
+    plan = group.plan()
+    group.go(wait=True)
+    return
 
+sys.argv.append("joint_states:=/robot/joint_states")
 moveit_commander.roscpp_initialize(sys.argv)
 
 robot = moveit_commander.RobotCommander()
 scene = moveit_commander.PlanningSceneInterface()
-
-group1 = moveit_commander.MoveGroupCommander("right_arm")
+group = moveit_commander.MoveGroupCommander("left_arm")
 
 rospy.init_node('ik_mover',
                 anonymous=True)
 
-rospy.Subscriber('to_move', geometry_msgs.msg.Pose, move)
+rospy.Subscriber('to_move', geometry_msgs.msg.Pose, move, queue_size=1)
 
 rospy.spin()
 
@@ -47,5 +49,3 @@ while True:
     group.go(wait=True)
 
     '''
-
-
