@@ -32,9 +32,9 @@ class projectile_tracker:
     self.scaleFactor = .0021
     self.centers = []
     self.plane_offset = 100
-    self.max_distance = 3700
+    self.max_distance = 3500
     self.frame_number = 0
-    self.min_area = 400
+    self.min_area = 600
     self.max_area = 2500
     self.white_circle_x = -1
     self.white_circle_y = -1
@@ -58,52 +58,29 @@ class projectile_tracker:
           if self.frame_number > 1:
               self.centers.append((real_x, real_y, real_z))
           self.frame_number += 1
-          #print("Pixel " + str(x) + " " + str(y) + " " + str(real_z))
-          #print("Real " + str(real_x) + " " + str(real_y) + " " + str(real_z))
-          #print("Robot " + str(real_z/1000) + " " + str(-real_x/1000) + " " + str((real_y + 930)/1000))
+          print("Pixel " + str(x) + " " + str(y) + " " + str(real_z))
+          print("Real " + str(real_x) + " " + str(real_y) + " " + str(real_z))
+          print("Robot " + str(real_z/1000) + " " + str(-real_x/1000) + " " + str((real_y + 930)/1000))
 
           print(self.frame_number)
 
     if (self.frame_number == self.num_points):
       # Check that z values are decreasing
-      '''
-      z = []
-      y = []
-      x = []
-      '''
-      prev = self.max_distance
-      for point in self.centers:
-          if point[2] > prev:
-              print("Error, invaild points")
-          '''
-          prev = point[2]
-          z.append(point[2])
-          y.append(point[1])
-          x.append(point[0])
-          '''
+
+
+
 
       x_plane, y_plane = self.predictPosition()
-      '''
-      z.append(0.1)
-      y.append(y_plane)
-      x.append(x_plane)
 
 
-      xz_plot = plt.figure()
-      plt.scatter(z,x)
-      plt.show()
 
-      yz_plot = plt.figure()
-      plt.scatter(z,y)
-      plt.show()
-      '''
 
 
       self.white_circle_x = x_plane
       self.white_circle_y = y_plane
 
-      print Point(0.1, -x_plane/1000, (y_plane+930)/1000)
-      self.predicted_pub.publish(Pose(Point(0.1, -(x_plane+150)/1000, (y_plane+930)/1000),
+      print Point(0.1, (x_plane+150)/1000, (y_plane+930)/1000)
+      self.predicted_pub.publish(Pose(Point(0.1, (x_plane+150)/1000, (y_plane+930)/1000),
                                     Quaternion(-0.5, 0.5, 0.5, 0.5)))
 
     cv2.circle(filter_frame, (int(self.white_circle_x), int(self.white_circle_y)), 5, 255, 3)
@@ -142,6 +119,30 @@ class projectile_tracker:
 
     x_plane = numpy.polyval(p_xz, self.plane_offset)
     y_plane = numpy.polyval(p_yz, self.plane_offset)
+
+    '''
+    zp = numpy.linspace(-500, 4000, 2000)
+
+    z.append(100)
+    y.append(y_plane)
+    x.append(x_plane)
+
+    xz_plot = plt.figure()
+    #plt.scatter(z,x)
+    plt.plot(z, [i+150 for i in x], '.', zp, [i+150 for i in numpy.polyval(p_xz, zp)], '-')
+    plt.title("Predicted Horizontal Component of Trajectory")
+    plt.xlabel("Distance from Baxter (mm)")
+    plt.ylabel("Horizontal Distance from Baxter (mm)")
+    plt.show()
+
+    yz_plot = plt.figure()
+    plt.plot(z, [i+930 for i in y], '.', zp, [i+930 for i in numpy.polyval(p_yz, zp)], '-')
+    plt.title("Predicted Vertical Component of Trajectory")
+    plt.xlabel("Distance from Baxter (mm)")
+    plt.ylabel("Vertical Distance from Baxter (mm)")
+    plt.show()
+    '''
+
     return x_plane, y_plane
 
   # pixelToReal converts (i, j, z) in pixels to (x, y, z) in real coordinates
