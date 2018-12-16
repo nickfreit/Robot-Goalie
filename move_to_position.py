@@ -23,29 +23,6 @@ robot = moveit_commander.RobotCommander()
 scene = moveit_commander.PlanningSceneInterface()
 group = moveit_commander.MoveGroupCommander("left_arm")
 
-rospy.init_node('ik_mover',
-                anonymous=True)
-
-rospy.Subscriber('to_move', geometry_msgs.msg.Pose, move, queue_size=1)
-
+rospy.init_node('ik_movement')
+rospy.Subscriber('predicted_position', geometry_msgs.msg.Pose, move, queue_size=1)
 rospy.spin()
-
-'''
-while True:
-    print "======Enter Position======"
-    x = input("x: ")
-    y = input("y: ")
-    z = input("z: ")
-    print "======Generating Plan======"
-    pose_target = geometry_msgs.msg.Pose()
-    pose_target.orientation.w = 1.0
-    pose_target.position.x = x
-    pose_target.position.y = y
-    pose_target.position.z = z
-    group.set_pose_target(pose_target)
-
-    print "======Moving Robot======"
-    plan1 = group.plan()
-    group.go(wait=True)
-
-    '''
