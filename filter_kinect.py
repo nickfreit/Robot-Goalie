@@ -54,27 +54,16 @@ class projectile_tracker:
       real_z = cv_image[y][x]
       if len(self.centers) == 0 or real_z < self.centers[-1][2]:
           real_x, real_y = self.pixelToReal(x, y, real_z)
-
           if self.frame_number > 1:
               self.centers.append((real_x, real_y, real_z))
           self.frame_number += 1
           print("Pixel " + str(x) + " " + str(y) + " " + str(real_z))
-          print("Real " + str(real_x) + " " + str(real_y) + " " + str(real_z))
+          # print("Real " + str(real_x) + " " + str(real_y) + " " + str(real_z))
           print("Robot " + str(real_z/1000) + " " + str(-real_x/1000) + " " + str((real_y + 930)/1000))
-
           print(self.frame_number)
 
     if (self.frame_number == self.num_points):
-      # Check that z values are decreasing
-
-
-
-
       x_plane, y_plane = self.predictPosition()
-
-
-
-
 
       self.white_circle_x = x_plane
       self.white_circle_y = y_plane
@@ -120,6 +109,7 @@ class projectile_tracker:
     x_plane = numpy.polyval(p_xz, self.plane_offset)
     y_plane = numpy.polyval(p_yz, self.plane_offset)
 
+    # Uncomment to enable plotting of the polynomials
     '''
     zp = numpy.linspace(-500, 4000, 2000)
 

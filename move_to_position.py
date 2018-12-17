@@ -1,3 +1,8 @@
+# This file contains the code for setting up the node that takes in a predicted
+# position, and tries to move Baxter's left arm to that location. The code
+# simply sets up a planner and listens on the 'ik_movement' topic. When a
+# pose is published on that topic, the planner is called to try to move Baxter
+# to that position if possible.
 import sys
 import copy
 import rospy
